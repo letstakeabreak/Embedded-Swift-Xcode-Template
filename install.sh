@@ -55,7 +55,7 @@ else
     # Passing IDF_TOOLS_PATH redirects all binaries to ~/.espswift/tools/
     # instead of the default ~/.espressif/.
     export IDF_TOOLS_PATH="$IDF_TOOLS_PATH"
-    "$IDF_PATH/install.sh" --target esp32c6
+    "$IDF_PATH/install.sh" esp32c6
 
     echo "ESP-IDF installed successfully."
 fi

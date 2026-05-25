@@ -59,3 +59,45 @@ else
 
     echo "ESP-IDF installed successfully."
 fi
+
+
+# ---- Step 2: Embedded Swift Toolchain (via swiftly) ----
+
+echo "[2/3] Installing Embedded Swift toolchain..."
+
+# swiftly is the official Swift toolchain installer and manager.
+# We use it instead of manually downloading snapshot tarballs,
+# so that toolchain updates are handled cleanly in the future.
+SWIFTLY_BIN = "$HOME/.swiftly/bin/swiftly"
+
+if ! command -v "$SWIFTLY_BIN" &>/dev/null; then
+    echo "swiftly not found. Installing swiftly..."
+
+    # Download the official swiftly pkg installer from swift.org.
+    curl -L https://download.swift.org/swiftly/darwin/swiftly.pkg -o /tmp/swiftly.pkg
+
+    # Install swiftly into the current user's home directory.
+    # -target CurrentUserHomeDirectory installs to ~/swiftly/
+    # without requiring sudo.
+    installer -pkg /tmp/swiftly.pkg -target CurrentUserHomeDirectory
+
+    # Clean up the downloaded pkg.
+    rm /tmp/swiftly.pkg
+
+    echo "swiftly installed successfully."
+fi
+
+# Initialize swiftly without installing the latest release toolchain.
+# --skip-install avoids downloading the stable release toolchain,
+# since Embedded Swift requires a development snapshot, not a release.
+# --no-modify-profile prevents swiftly from editing ~/.zshrc or ~/.bashrc,
+# as we manage PATH ourselevs in this script.
+"$SWIFTLY_BIN" init --skip-install --no-modify-profile
+
+# Install the latest main development snapshot.
+# Embedded Swift is not yet available in stable releases,
+# so we must use a main-snapshot toolchain (Swift 6.2 dev or later).
+"$SWIFTLY_BIN" install main-snapshot
+
+echo "Embedded Swift toolchain installed successfully."
+

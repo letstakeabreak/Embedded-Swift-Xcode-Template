@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+    "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+
+    <!-- The name shown in Xcode's "New Project" template picker. -->
+    <key>Name</key>
+    <string>ESP32-C6 Embedded Swift</string>
+
+    <!-- A short description shown below the template name. -->
+    <key>Description</key>
+    <string>A bare-metal Embedded Swift project targeting the ESP32-C6 (RISC-V).</string>
+
+    <!-- The category this template appears under in Xcode's template picker. -->
+    <key>Category</key>
+    <string>Embedded</string>
+
+    <!-- Minimum Xcode version required. -->
+    <key>MinimumXcodeVersion</key>
+    <string>16.0</string>
+
+    <!-- List of files Xcode will create when the user makes a new project. -->
+    <key>Nodes</key>
+    <array>
+        <string>main.swift</string>
+    </array>
+
+</dict>
+</plist>

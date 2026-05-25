@@ -21,14 +21,14 @@ set -e
 # Keeping everything under one directory makes uninstallation easy
 # and avoids conflicts with other ESP-IDF installations the user
 # might already have.
-ESPSWIFT_HOME = "$HOME/.espswift"
+ESPSWIFT_HOME="$HOME/.espswift"
 
 # ESP-IDF will be cloned into this subdirectory.
-IDF_PATH = "$ESPSWIFT_HOME/esp-idf"
+IDF_PATH="$ESPSWIFT_HOME/esp-idf"
 
 # ESP-IDF's own tool installer (xtensa toolchain, openocd, etc.)
 # will place binaries here instead of the default ~/.espressif/.
-IDF_TOOLS_PATH = "$ESPSWIFT_HOME/tools"
+IDF_TOOLS_PATH="$ESPSWIFT_HOME/tools"
 
 # ---- Setup ----
 
@@ -68,7 +68,7 @@ echo "[2/3] Installing Embedded Swift toolchain..."
 # swiftly is the official Swift toolchain installer and manager.
 # We use it instead of manually downloading snapshot tarballs,
 # so that toolchain updates are handled cleanly in the future.
-SWIFTLY_BIN = "$HOME/.swiftly/bin/swiftly"
+SWIFTLY_BIN="$HOME/.swiftly/bin/swiftly"
 
 if ! command -v "$SWIFTLY_BIN" &>/dev/null; then
     echo "swiftly not found. Installing swiftly..."
@@ -106,7 +106,7 @@ echo "Embedded Swift toolchain installed successfully."
 echo "[3/3] Installing Xcode template..."
 
 # The directory where Xcode looks for custom project templates.
-XCODE_TEMPLATES_DIR = "$HOME/Library/Developer/Xcode/Templates/Project Templates"
+XCODE_TEMPLATES_DIR="$HOME/Library/Developer/Xcode/Templates/Project Templates"
 
 # Create the directory if it does not exist.
 # This is common on fresh macOS installations where Xcode Templates
@@ -125,5 +125,5 @@ echo "Xcode Template installed successfully."
 # ---- Done ----
 
 echo ""
-echo ""Installation complete."
+echo "Installation complete."
 echo "Restart Xcode and create a new project to use the ESP32-C6 Embedded Swift template."

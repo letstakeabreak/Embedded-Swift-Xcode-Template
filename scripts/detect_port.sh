@@ -12,10 +12,10 @@
 # Exits with code 1 if no device is found.
 
 # Espressif's USB Vendor ID.
-VID = "303a"
+VID="303a"
 
 # ESP32-C6's USB Product ID.
-PID = "1001"
+PID="1001"
 
 # Query the I/O Registry for a USB device matching our VID and PID,
 # then extract the corresponding /dev/cu.* port path.
@@ -45,7 +45,7 @@ PID = "1001"
 #   line, which contains the actual port path (e.g. /dev/cu.usbmodem101).
 #   match () extracts the value inside quotes, prints it, and exits.
 
-PORT = $(ioreg -p IOUSB -l | awk '
+PORT=$(ioreg -p IOUSB -l | awk '
     /idVendor.*0x'"$VID"'/ { found_vid = 1 }
     found_vid && /idProduct.*0x'"$PID"'/ { found_pid = 1 }
     found_pid && /IODialinDevice/ {

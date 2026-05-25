@@ -1,0 +1,3 @@
+# Tell Github's language detector to recognize Swift files
+# inside Xcode template directories as Swift source code.
+*.swift linguist-language=Swift

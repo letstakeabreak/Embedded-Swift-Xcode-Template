@@ -4,6 +4,26 @@
 <plist version="1.0">
 <dict>
 
+    <!-- Tells Xcode this is a Project Template (not a File Template). -->
+    <key>kind</key>
+    <string>Xcode.Xcode3.ProjectTemplateUnitKind</string>
+
+    <!-- A Unique Identifier for this template within Xcode's template system. -->
+    <key>Identifier</key>
+    <string>com.espressif.template.esp32c6</string>
+
+    <!-- Inherit from the External Build System template, since Embedded Swift
+    on ESP32-C6 is compiled by an external toolchain (swiftc + esp-idf),
+    not by Xcode's built-in build system. -->
+    <key>Ancestors</key>
+    <array>
+        <string>com.apple.dt.unit.externalBuildSystem</string>
+    </array>
+
+    <!-- Marks this template as directly selectable (not just an abstract base) -->
+    <key>Concrete</key>
+    <true/>
+
     <!-- The name shown in Xcode's "New Project" template picker. -->
     <key>Name</key>
     <string>ESP32-C6 Embedded Swift</string>
@@ -11,10 +31,6 @@
     <!-- A short description shown below the template name. -->
     <key>Description</key>
     <string>A bare-metal Embedded Swift project targeting the ESP32-C6 (RISC-V).</string>
-
-    <!-- The category this template appears under in Xcode's template picker. -->
-    <key>Category</key>
-    <string>Embedded</string>
 
     <!-- Minimum Xcode version required. -->
     <key>MinimumXcodeVersion</key>

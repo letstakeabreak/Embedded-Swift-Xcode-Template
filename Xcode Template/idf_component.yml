@@ -1,0 +1,9 @@
+# idf_component.yml
+# IDF Component Manager manifest file
+#
+# This file declares the dependencies for this ESP-IDF component.
+# idf_swift provides the Embedded Swift runtime and the custom CMake
+# functions (idf_component_register_swift) used in CMakeLists.txt.
+
+dependencies:
+  espressif/idf_swift: ^1.0.0

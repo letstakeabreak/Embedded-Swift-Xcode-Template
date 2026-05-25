@@ -92,7 +92,7 @@ fi
 # since Embedded Swift requires a development snapshot, not a release.
 # --no-modify-profile prevents swiftly from editing ~/.zshrc or ~/.bashrc,
 # as we manage PATH ourselevs in this script.
-"$SWIFTLY_BIN" init --skip-install --no-modify-profile
+"$SWIFTLY_BIN" init --skip-install --no-modify-profile --assume-yes
 
 # Install the latest main development snapshot.
 # Embedded Swift is not yet available in stable releases,

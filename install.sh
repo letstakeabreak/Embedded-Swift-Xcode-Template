@@ -101,3 +101,29 @@ fi
 
 echo "Embedded Swift toolchain installed successfully."
 
+# ---- Step 3: Install Xcode Template ----
+
+echo "[3/3] Installing Xcode template..."
+
+# The directory where Xcode looks for custom project templates.
+XCODE_TEMPLATES_DIR = "$HOME/Library/Developer/Xcode/Templates/Project Templates"
+
+# Create the directory if it does not exist.
+# This is common on fresh macOS installations where Xcode Templates
+# have never been customized before.
+mkdir -p "$XCODE_TEMPLATES_DIR"
+
+# Copy the template into Xcode's template directory.
+# -R copies the directory recursively.
+# Existing files will be overwritten, so re-running install.sh
+# always gives the user the latest version of the template.
+cp -R "$(dirname "$0")/Xcode Template/ESP32-C6.xctemplate" \
+    "$XCODE_TEMPLATES_DIR/"
+
+echo "Xcode Template installed successfully."
+
+# ---- Done ----
+
+echo ""
+echo ""Installation complete."
+echo "Restart Xcode and create a new project to use the ESP32-C6 Embedded Swift template."

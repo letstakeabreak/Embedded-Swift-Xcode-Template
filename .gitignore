@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+
+# ESPSwift installer artifacts
+*.pkg
+
+# ESP-IDF build artifacts
+build/
+sdkconfig
+sdkconfig.old
+
+# Xcode
+*.xcuserstate
+xcuserdata/
+DerivedData/

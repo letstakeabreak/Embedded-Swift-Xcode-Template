@@ -35,6 +35,7 @@
 		<string>build.sh</string>
 		<string>CMakeLists.txt</string>
 		<string>main/CMakeLists.txt</string>
+		<string>main/idf_component.yml</string>
 		<string>main/main.swift</string>
 	</array>
 	<key>Definitions</key>
@@ -63,6 +64,17 @@
 			</array>
 			<key>TargetIndices</key>
 			<array/>
+		</dict>
+		<key>main/idf_component.yml</key>
+		<dict>
+   			<key>Path</key>
+    		<string>main_idf_component.yml</string>
+    		<key>Group</key>
+    		<array>
+        		<string>main</string>
+    		</array>
+    			<key>TargetIndices</key>
+    		<array/>
 		</dict>
 		<key>main/main.swift</key>
 		<dict>

@@ -1,4 +1,4 @@
-#!/bin.bash
+#!/bin/bash
 
 # flash.sh
 # Builds the project and flashes it to a connected ESP32-C6 device.

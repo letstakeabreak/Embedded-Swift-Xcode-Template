@@ -14,6 +14,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "sdkconfig.h"
+#include "led_strip.h"
 
 // ── FreeRTOS Macro Wrappers ──────────────────────────────────────
 // C macros like pdMS_TO_TICKS() cannot be called directly from Swift.

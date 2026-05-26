@@ -29,22 +29,27 @@ if [ ! -d "$IDF_PATH" ]; then
     exit 1
 fi
 
-# Xcode's PATH is restricted and does not include Homebrew.
-# Explicitly add Homebrew and common Python locations.
-export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:$PATH"
-
 # Use the default ESP-IDF tools path (~/.espressif)
 # IDF_TOOLS_PATH override did not work as expected during installation.
 IDF_PYTHON_ENV_PATH=$(find "$HOME/.espressif/python_env" -maxdepth 1 -type d -name "idf*py3.11*" | head -1)
 export IDF_PYTHON_ENV_PATH
 
+# Xcode's PATH is restricted. Add Homebrew BEFORE sourcing export.sh
+# so that ESP-IDF can find python3.
+export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:$PATH"
+
 # Source the ESP-IDF environment so idf.py is on PATH.
 source "$IDF_PATH/export.sh"
 
-# Use the specified Embedded Swift toolchain snapshot.
-# idf_swift requires a development snapshot that supports Embedded Swift.
-export TOOLCHAINS="swift-DEVELOPMENT-SNAPSHOT-2026-05-07-a"
+# AFTER sourcing, prepend the Embedded Swift toolchain so it takes
+# priority over Xcode's default Swift compiler.
 export PATH="/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-2026-05-07-a.xctoolchain/usr/bin:$PATH"
+
+# Force CMake to use the Embedded Swift toolchain compiler.
+export CMAKE_Swift_COMPILER="/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-2026-05-07-a.xctoolchain/usr/bin/swiftc"
+
+# Use the specified Embedded Swift toolchain snapshot.
+export TOOLCHAINS="swift-DEVELOPMENT-SNAPSHOT-2026-05-07-a"
 
 # ── Target Setup ─────────────────────────────────────────────────
 

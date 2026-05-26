@@ -25,7 +25,7 @@
 			<key>TargetIdentifier</key>
 			<string>com.apple.dt.cocoaLegacyTarget</string>
 			<key>BuildToolPath</key>
-			<string>$(PROJECT_DIR)/build.sh</string>
+            <string>$(PROJECT_DIR)/___PROJECTNAME___/build.sh</string>
 			<key>BuildToolArgsString</key>
 			<string>$(ACTION)</string>
 		</dict>

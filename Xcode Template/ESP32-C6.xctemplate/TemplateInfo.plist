@@ -1,130 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
-    "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>Kind</key>
+	<string>Xcode.Xcode3.ProjectTemplateUnitKind</string>
+	<key>Identifier</key>
+	<string>com.espswift.template.esp32c6</string>
+	<key>Ancestors</key>
+	<array>
+		<string>com.apple.dt.unit.base</string>
+	</array>
+	<key>Concrete</key>
+	<true/>
+	<key>Description</key>
+	<string>A bare-metal Embedded Swift project targeting the ESP32-C6 (RISC-V).</string>
+	<key>SortOrder</key>
+	<integer>1</integer>
 
-    <!-- Tells Xcode this is a Project Template (not a File Template). -->
-    <key>kind</key>
-    <string>Xcode.Xcode3.ProjectTemplateUnitKind</string>
-
-    <!-- A Unique Identifier for this template within Xcode's template system. -->
-    <key>Identifier</key>
-    <string>com.espressif.template.esp32c6</string>
-
-    <!-- Inherit from the External Build System template, since Embedded Swift
-    on ESP32-C6 is compiled by an external toolchain (swiftc + esp-idf),
-    not by Xcode's built-in build system. -->
-    <key>Ancestors</key>
-    <array>
-        <string>com.apple.dt.unit.externalBuildSystem</string>
-    </array>
-
-    <!-- Marks this template as directly selectable (not just an abstract base) -->
-    <key>Concrete</key>
-    <true/>
-
-    <!-- Description shown in Xcode's template picker. -->
-    <key>Description</key>
-    <string>A bare-metal Embedded Swift project targeting the ESP32-C6 (RISC-V).</string>
-   
-    <!-- Sort order within the category -->
-    <key>SortOrder</key>
-    <integer>1</integer>
-
-    <!-- Defines the build target. We use a Legacy target so that 
-    Xcode delegates building to our build.sh script, since the
-    actual compilation is done by ESP-IDF + Embedded Swift toolchain. -->
-    <key>Targets</key>
-    <array>
-        <dict>
-            <key>TargetType</key>
-            <string>Legacy</string>
-            <key>TargetIdentifier</key>
-            <string>com.apple.dt.cocoaLegacyTarget</string>
-            <key>BuildToolPath</key>
-            <string>$(PROJECT_DIR)/build.sh</string>
-            <key>BuildToolArgsString</key>
-            <string>$(ACTION)</string>
-        </dict>
-    </array>
-
-    <!-- Maps each Node to the actual source file inside the xctemplate.
-    Since xctemplate folders are flat, files in subdirectories are 
-    stored with underscores (e.g. Main/CMakeLists.txt is stored as
-    main_CMakeLists.txt) and grouped via the "Group" array. -->
-    <key>Definitions</key>
-    <dict>
-        <key>build.sh</key>
-        <dict>
-            <key>Path</key>
-            <string>build.sh</string>
-            <key>TargetIndices</key>
-            <array/>
-        </dict>
-        <key>CMakeLists.txt</key>
-        <dict>
-            <key>Path</key>
-            <string>CMakeLists.txt</string>
-            <key>TargetIndices</key>
-            <array/>
-        </dict>
-        <key>main/CMakeLists.txt</key>
-        <dict>
-            <key>Path</key>
-            <string>main_CMakeLists.txt</string>
-            <key>Group</key>
-            <Array>
-                    <string>main</string>
-            </array>
-            <key>TargetIndices</key>
-            <array/>
-        </dict>
-        <key>main/Main.swift</key>
-        <dict>
-            <key>Path</key>
-            <string>main_Main.swift</string>
-            <key>Group</key>
-            <array>
-                <string>main</string>
-            </array>
-            <key>TargetIndices</key>
-            <array/>
-        </dict>
-        <key>main/Led.swift</key>
-        <dict>
-            <key>Path</key>
-            <string>main_Led.swift</string>
-            <key>Group</key>
-            <array>
-                <string>main</string>
-            </array>
-            <key>TargetIndices</key>
-            <array/>
-        </dict>
-        <key>main/BridgingHeader.h</key>
-        <dict>
-            <key>Path</key>
-            <string>main_BridgingHeader.h</string>
-            <key>Group</key>
-            <array>
-                <string>main</string>
-            </array>
-            <key>TargetIndices</key>
-            <array/>
-        </dict>
-        <key>main/idf_component.yml</key>
-        <dict>
-            <key>Path</key>
-            <string>main_idf_component.yml</string>
-            <key>Group</key>
-            <array>
-                <string>main</string>
-            </array>
-            <key>TargetIndices</key>
-            <array/>
-        </dict>
-    </dict>
-
+	<key>Targets</key>
+	<array>
+		<dict>
+			<key>TargetType</key>
+			<string>Legacy</string>
+			<key>TargetIdentifier</key>
+			<string>com.apple.dt.cocoaLegacyTarget</string>
+			<key>BuildToolPath</key>
+			<string>$(PROJECT_DIR)/build.sh</string>
+			<key>BuildToolArgsString</key>
+			<string>$(ACTION)</string>
+		</dict>
+	</array>
+	<key>Nodes</key>
+	<array>
+		<string>build.sh</string>
+		<string>CMakeLists.txt</string>
+		<string>main/CMakeLists.txt</string>
+		<string>main/main.swift</string>
+	</array>
+	<key>Definitions</key>
+	<dict>
+		<key>build.sh</key>
+		<dict>
+			<key>Path</key>
+			<string>build.sh</string>
+			<key>TargetIndices</key>
+			<array/>
+		</dict>
+		<key>CMakeLists.txt</key>
+		<dict>
+			<key>Path</key>
+			<string>CMakeLists.txt</string>
+			<key>TargetIndices</key>
+			<array/>
+		</dict>
+		<key>main/CMakeLists.txt</key>
+		<dict>
+			<key>Path</key>
+			<string>main_CMakeLists.txt</string>
+			<key>Group</key>
+			<array>
+				<string>main</string>
+			</array>
+			<key>TargetIndices</key>
+			<array/>
+		</dict>
+		<key>main/main.swift</key>
+		<dict>
+			<key>Path</key>
+			<string>main.swift</string>
+			<key>Group</key>
+			<array>
+				<string>main</string>
+			</array>
+			<key>TargetIndices</key>
+			<array/>
+		</dict>
+	</dict>
 </dict>
 </plist>

@@ -1,56 +1,56 @@
 #!/bin/bash
 
 # build.sh
-# Build and flash entry point for the ESP32-C6 Embedded Swift Project.
-#
-# This script is invokeed by Xcode's Legacy build target. When the user
-# presses CMD+B in Xcode, Xcode runs this script instead of using its
-# own build system, because compilation is delegated to ESP-IDF.
-# 
-# Usage: bash build.sh <action>
-# <action> is passed by Xcode and can be "build", "clean", etc.
+# Invoked by Xcode when the user presses Build (Cmd+B).
+# Delegates the actual compilation to ESP-IDF, since the Embedded Swift
+# toolchain and ESP-IDF are not directly integrated with Xcode's build system.
 
-set -e
+echo "================================================="
+echo " ESP32-C6 Embedded Swift Build"
+echo "================================================="
 
-# ---- Constants ----
+# Xcode provides PROJECT_DIR. Make sure we run from the project root.
+if [ -n "$PROJECT_DIR" ]; then
+    cd "$PROJECT_DIR" || exit 1
+fi
 
-# Path to ESP-IDF, installed by install.sh
-ESPSWIFT_HOME="$HOME/.espswift"
-IDF_PATH="$ESPSWIFT_HOME/esp-idf"
-IDF_TOOLS_PATH="$ESPSWIFT_HOME/tools"
+# ── ESP-IDF Setup ────────────────────────────────────────────────
 
-# Path to our flash script, located alongside this build script.
-FLASH_SCRIPT="$(dirname "$0")/flash.sh"
+# ESP-IDF is installed by install.sh into ~/.espswift/esp-idf.
+# If a user has their own ESP-IDF and exported IDF_PATH, respect that.
+if [ -z "$IDF_PATH" ]; then
+    export IDF_PATH="$HOME/.espswift/esp-idf"
+fi
 
-# Action passed by Xcode (build, clean, etc.).
-ACTION="${1:-build}"
+if [ ! -d "$IDF_PATH" ]; then
+    echo "Error: ESP-IDF not found at $IDF_PATH" >&2
+    echo "Please run install.sh first." >&2
+    exit 1
+fi
 
-# ---- Environment Setup ----
-
-# Export IDF_TOOLS_PATH so ESP-IDF's export.sh uses our isolated tools.
-export IDF_TOOLS_PATH
-
-# Source ESP-IDF's environment setup.
-# This sets IDF_PATH, PATH, and other variables required by idf.py.
-# It must be sourced (not executed) so the variables persist in this shell.
+# Source the ESP-IDF environment so idf.py is on PATH.
 source "$IDF_PATH/export.sh"
 
-# ---- Build / Clean ----
+# ── Target Setup ─────────────────────────────────────────────────
 
-case "$ACTION" in
-    clean)
-        echo "Cleaning build directory..."
-        idf.py fullclean
-        ;;
-    build|"")
-        echo "Build project for ESP32-C6..."
-        idf.py set-target esp32c6
-        idf.py build
-        ;;
-    *)
-        echo "Unknown action: $ACTION" >&2
-        exit 1
-        ;;
-esac
+# Set the target to esp32c6 on first build (creates sdkconfig).
+if [ ! -f "sdkconfig" ]; then
+    echo "Setting target to esp32c6..."
+    idf.py set-target esp32c6
+fi
 
-echo "Done."
+# ── Action ───────────────────────────────────────────────────────
+
+ACTION=${1:-build}
+
+if [ "$ACTION" = "clean" ]; then
+    echo "Cleaning project..."
+    idf.py fullclean
+else
+    echo "Building project..."
+    idf.py build
+fi
+
+echo "================================================="
+echo " Build Complete"
+echo "================================================="

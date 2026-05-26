@@ -1,0 +1,11 @@
+# ESP32-C6 Default Configuration for Embedded Swift
+
+# Disable Task Watchdog Timer by default
+CONFIG_ESP_TASK_WDT=n
+CONFIG_ESP_TASK_WDT_EN=n
+
+# Optional: Faster boot
+CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ=240
+
+# Optional: Reduce binary size
+CONFIG_BOOTLOADER_LOG_LEVEL_WARN=y

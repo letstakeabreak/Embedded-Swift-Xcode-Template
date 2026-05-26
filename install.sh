@@ -126,6 +126,10 @@ cp -R "$XCODE_BUILTIN_TEMPLATE" "$TARGET_TEMPLATE"
 # always gives the user the latest version of the template.
 cp -R "$(dirname "$0")/Xcode Template/ESP32-C6.xctemplate/"* "$TARGET_TEMPLATE/"
 
+# Grant execute permission to build.sh so Xcode can run it.
+# cp -R does not always preserve execute permissions.
+chmod +x "$TARGET_TEMPLATE/build.sh"
+
 echo "Xcode Template installed successfully."
 
 # ---- Done ----

@@ -28,6 +28,15 @@ if [ ! -d "$IDF_PATH" ]; then
     exit 1
 fi
 
+# Xcode's PATH is restricted and does not include Homebrew.
+# Explicitly add Homebrew and common Python locations.
+export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:$PATH"
+
+# Use the default ESP-IDF tools path (~/.espressif)
+# IDF_TOOLS_PATH override did not work as expected during installation.
+IDF_PYTHON_ENV_PATH=$(find "$HOME/.espressif/python_env" -maxdepth 1 -type d -name "idf*py3.11*" | head -1)
+export IDF_PYTHON_ENV_PATH
+
 # Source the ESP-IDF environment so idf.py is on PATH.
 source "$IDF_PATH/export.sh"
 

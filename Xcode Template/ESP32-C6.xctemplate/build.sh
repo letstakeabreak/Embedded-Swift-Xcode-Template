@@ -43,10 +43,10 @@ source "$IDF_PATH/export.sh"
 
 # AFTER sourcing, prepend the Embedded Swift toolchain so it takes
 # priority over Xcode's default Swift compiler.
-export PATH="/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-2026-05-07-a.xctoolchain/usr/bin:$PATH"
+export PATH="$HOME/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-2026-05-07-a.xctoolchain/usr/bin:$PATH"
 
 # Force CMake to use the Embedded Swift toolchain compiler.
-export CMAKE_Swift_COMPILER="/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-2026-05-07-a.xctoolchain/usr/bin/swiftc"
+export CMAKE_Swift_COMPILER="$HOME/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-2026-05-07-a.xctoolchain/usr/bin/swiftc"
 
 # Use the specified Embedded Swift toolchain snapshot.
 export TOOLCHAINS="swift-DEVELOPMENT-SNAPSHOT-2026-05-07-a"

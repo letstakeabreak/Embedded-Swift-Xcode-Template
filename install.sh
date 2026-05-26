@@ -28,7 +28,7 @@ IDF_PATH="$ESPSWIFT_HOME/esp-idf"
 
 # ESP-IDF's own tool installer (xtensa toolchain, openocd, etc.)
 # will place binaries here instead of the default ~/.espressif/.
-IDF_TOOLS_PATH="$ESPSWIFT_HOME/tools"
+# IDF_TOOLS_PATH="$ESPSWIFT_HOME/tools"
 
 # ---- Setup ----
 
@@ -54,7 +54,7 @@ else
     # Install only the ESP32-C6 target to minimize download size.
     # Passing IDF_TOOLS_PATH redirects all binaries to ~/.espswift/tools/
     # instead of the default ~/.espressif/.
-    export IDF_TOOLS_PATH="$IDF_TOOLS_PATH"
+    # export IDF_TOOLS_PATH="$IDF_TOOLS_PATH"
     "$IDF_PATH/install.sh" esp32c6
 
     echo "ESP-IDF installed successfully."

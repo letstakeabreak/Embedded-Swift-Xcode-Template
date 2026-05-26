@@ -9,9 +9,10 @@ echo "================================================="
 echo " ESP32-C6 Embedded Swift Build"
 echo "================================================="
 
-# Xcode provides PROJECT_DIR. Make sure we run from the project root.
-if [ -n "$PROJECT_DIR" ]; then
-    cd "$PROJECT_DIR" || exit 1
+# Xcode provides PROJECT_DIR and PROJECT_NAME.
+# The actual source files are in a subdirectory named after the project.
+if [ -n "$PROJECT_DIR" ] && [ -n "$PROJECT_NAME" ]; then
+    cd "$PROJECT_DIR/$PROJECT_NAME" || exit 1
 fi
 
 # ── ESP-IDF Setup ────────────────────────────────────────────────

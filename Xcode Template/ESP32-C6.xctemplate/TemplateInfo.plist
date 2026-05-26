@@ -86,6 +86,7 @@
 	<array>
 		<string>build.sh</string>
 		<string>CMakeLists.txt</string>
+		<string>sdkconfig.defaults</string>
 		<string>main/BridgingHeader.h</string>
 		<string>main/CMakeLists.txt</string>
 		<string>main/idf_component.yml</string>

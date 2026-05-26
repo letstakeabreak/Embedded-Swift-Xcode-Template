@@ -39,7 +39,7 @@ mkdir -p "$ESPSWIFT_HOME"
 
 # ---- Step 1 : ESP-IDF ----
 
-echo "[1/3] Installing ESP-IDF..."
+echo "[1/4] Installing ESP-IDF..."
 
 if [ -d "$IDF_PATH" ]; then
     # Skip cloning if ESP-IDF is already present.
@@ -63,7 +63,7 @@ fi
 
 # ---- Step 2: Embedded Swift Toolchain (via swiftly) ----
 
-echo "[2/3] Installing Embedded Swift toolchain..."
+echo "[2/4] Installing Embedded Swift toolchain..."
 
 # swiftly is the official Swift toolchain installer and manager.
 # We use it instead of manually downloading snapshot tarballs,
@@ -103,7 +103,7 @@ echo "Embedded Swift toolchain installed successfully."
 
 # ---- Step 3: Install Xcode Template ----
 
-echo "[3/3] Installing Xcode template..."
+echo "[3/4] Installing Xcode template..."
 
 # The directory where Xcode looks for custom project templates.
 XCODE_TEMPLATES_DIR="$HOME/Library/Developer/Xcode/Templates/Project Templates/Other"
@@ -131,6 +131,20 @@ cp -R "$(dirname "$0")/Xcode Template/ESP32-C6.xctemplate/"* "$TARGET_TEMPLATE/"
 chmod +x "$TARGET_TEMPLATE/build.sh"
 
 echo "Xcode Template installed successfully."
+
+# ---- Step 4: Install helper scripts ----
+
+echo "[4/4] Installing helper scripts..."
+
+# Copy detect_port.sh and flash.sh into ~/.espswift/scripts/ so that
+# the Xcode build script (build.sh) can call them via a known path.
+# These scripts are responsible for finding the connected ESP32-C6
+# and flashing the compiled binary to it.
+mkdir -p "$ESPSWIFT_HOME/scripts"
+cp "$(dirname "$0")/scripts/"*.sh "$ESPSWIFT_HOME/scripts/"
+chmod +x "$ESPSWIFT_HOME/scripts/"*.sh
+
+echo "Helper scripts installed successfully."
 
 # ---- Done ----
 

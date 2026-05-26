@@ -69,8 +69,26 @@ if [ "$ACTION" = "clean" ]; then
 else
     echo "Building project..."
     idf.py build
+
+    # After a successful build, attempt to flash the firmware to a
+    # connected ESP32-C6 automatically. This mimics the Arduino IDE
+    # workflow where Cmd+B both compiles and uploads in one step.
+    #
+    # If no board is connected, flash.sh will exit with a non-zero
+    # status, but we don't propagate that as a build failure since
+    # the binary itself built successfully.
+    FLASH_SCRIPT="$HOME/.espswift/scripts/flash.sh"
+    if [ -x "$FLASH_SCRIPT" ]; then
+        echo ""
+        echo "================================================="
+        echo " Auto-Flashing to ESP32-C6"
+        echo "================================================="
+        "$FLASH_SCRIPT" "$PROJECT_DIR/$PROJECT_NAME" || \
+            echo "Warning: Flash failed or no device connected."
+    fi
 fi
 
 echo "================================================="
 echo " Build Complete"
 echo "================================================="
+

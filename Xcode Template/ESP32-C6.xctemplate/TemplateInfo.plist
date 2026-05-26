@@ -24,23 +24,107 @@
     <key>Concrete</key>
     <true/>
 
-    <!-- The name shown in Xcode's "New Project" template picker. -->
-    <key>Name</key>
-    <string>ESP32-C6 Embedded Swift</string>
-
-    <!-- A short description shown below the template name. -->
+    <!-- Description shown in Xcode's template picker. -->
     <key>Description</key>
     <string>A bare-metal Embedded Swift project targeting the ESP32-C6 (RISC-V).</string>
+   
+    <!-- Sort order within the category -->
+    <key>SortOrder</key>
+    <integer>1</integer>
 
-    <!-- Minimum Xcode version required. -->
-    <key>MinimumXcodeVersion</key>
-    <string>16.0</string>
-
-    <!-- List of files Xcode will create when the user makes a new project. -->
-    <key>Nodes</key>
+    <!-- Defines the build target. We use a Legacy target so that 
+    Xcode delegates building to our build.sh script, since the
+    actual compilation is done by ESP-IDF + Embedded Swift toolchain. -->
+    <key>Targets</key>
     <array>
-        <string>main.swift</string>
+        <dict>
+            <key>TargetType</key>
+            <string>Legacy</string>
+            <key>TargetIdentifier</key>
+            <string>com.apple.dt.cocoaLegacyTarget</string>
+            <key>BuildToolPath</key>
+            <string>$(PROJECT_DIR)/build.sh</string>
+            <key>BuildToolArgsString</key>
+            <string>$(ACTION)</string>
+        </dict>
     </array>
+
+    <!-- Maps each Node to the actual source file inside the xctemplate.
+    Since xctemplate folders are flat, files in subdirectories are 
+    stored with underscores (e.g. Main/CMakeLists.txt is stored as
+    main_CMakeLists.txt) and grouped via the "Group" array. -->
+    <key>Definitions</key>
+    <dict>
+        <key>build.sh</key>
+        <dict>
+            <key>Path</key>
+            <string>build.sh</string>
+            <key>TargetIndices</key>
+            <array/>
+        </dict>
+        <key>CMakeLists.txt</key>
+        <dict>
+            <key>Path</key>
+            <string>CMakeLists.txt</string>
+            <key>TargetIndices</key>
+            <array/>
+        </dict>
+        <key>main/CMakeLists.txt</key>
+        <dict>
+            <key>Path</key>
+            <string>main_CMakeLists.txt</string>
+            <key>Group</key>
+            <Array>
+                    <string>main</string>
+            </array>
+            <key>TargetIndices</key>
+            <array/>
+        </dict>
+        <key>main/Main.swift</key>
+        <dict>
+            <key>Path</key>
+            <string>main_Main.swift</string>
+            <key>Group</key>
+            <array>
+                <string>main</string>
+            </array>
+            <key>TargetIndices</key>
+            <array/>
+        </dict>
+        <key>main/Led.swift</key>
+        <dict>
+            <key>Path</key>
+            <string>main_Led.swift</string>
+            <key>Group</key>
+            <array>
+                <string>main</string>
+            </array>
+            <key>TargetIndices</key>
+            <array/>
+        </dict>
+        <key>main/BridgingHeader.h</key>
+        <dict>
+            <key>Path</key>
+            <string>main_BridgingHeader.h</string>
+            <key>Group</key>
+            <array>
+                <string>main</string>
+            </array>
+            <key>TargetIndices</key>
+            <array/>
+        </dict>
+        <key>main/idf_component.yml</key>
+        <dict>
+            <key>Path</key>
+            <string>main_idf_component.yml</string>
+            <key>Group</key>
+            <array>
+                <string>main</string>
+            </array>
+            <key>TargetIndices</key>
+            <array/>
+        </dict>
+    </dict>
 
 </dict>
 </plist>

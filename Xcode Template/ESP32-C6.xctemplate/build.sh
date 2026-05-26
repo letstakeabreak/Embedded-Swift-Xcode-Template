@@ -41,6 +41,11 @@ export IDF_PYTHON_ENV_PATH
 # Source the ESP-IDF environment so idf.py is on PATH.
 source "$IDF_PATH/export.sh"
 
+# Use the specified Embedded Swift toolchain snapshot.
+# idf_swift requires a development snapshot that supports Embedded Swift.
+export TOOLCHAINS="swift-DEVELOPMENT-SNAPSHOT-2026-05-07-a"
+export PATH="/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-2026-05-07-a.xctoolchain/usr/bin:$PATH"
+
 # ── Target Setup ─────────────────────────────────────────────────
 
 # Set the target to esp32c6 on first build (creates sdkconfig).

@@ -1,4 +1,27 @@
 # Component CMakeLists.txt for the main ESP-IDF component.
-# Registers main.swift as the source file for this component.
-idf_component_register(SRCS "main.swift"
-                       INCLUDE_DIRS "")
+# Configures Embedded Swift compilation via the idf_swift component.
+
+if(WIN32)
+    set(devnull NUL)
+else()
+    set(devnull /dev/null)
+endif()
+
+idf_component_register(
+    SRCS ${devnull}
+    PRIV_INCLUDE_DIRS "."
+    PRIV_REQUIRES idf_swift
+)
+
+idf_component_register_swift(
+    ${COMPONENT_LIB}
+    BRIDGING_HEADER ${CMAKE_CURRENT_LIST_DIR}/BridgingHeader.h
+    SRCS main.swift
+)
+
+# Remove compiler flags that are not supported by the Swift compiler.
+get_target_property(_swift_flags ${COMPONENT_LIB} COMPILE_OPTIONS)
+if(_swift_flags)
+    list(FILTER _swift_flags EXCLUDE REGEX "gdwarf|ggdb")
+    set_target_properties(${COMPONENT_LIB} PROPERTIES COMPILE_OPTIONS "${_swift_flags}")
+endif()

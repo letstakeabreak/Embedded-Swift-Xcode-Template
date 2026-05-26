@@ -34,6 +34,7 @@
 	<array>
 		<string>build.sh</string>
 		<string>CMakeLists.txt</string>
+		<string>main/BridgingHeader.h</string>
 		<string>main/CMakeLists.txt</string>
 		<string>main/idf_component.yml</string>
 		<string>main/main.swift</string>
@@ -53,6 +54,17 @@
 			<string>CMakeLists.txt</string>
 			<key>TargetIndices</key>
 			<array/>
+		</dict>
+		<key>main/BridgingHeader.h</key>
+		<dict>
+    		<key>Path</key>
+    		<string>main_BridgingHeader.h</string>
+    		<key>Group</key>
+    		<array>
+        		<string>main</string>
+    		</array>
+    		<key>TargetIndices</key>
+    		<array/>
 		</dict>
 		<key>main/CMakeLists.txt</key>
 		<dict>

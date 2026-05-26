@@ -1,95 +1,97 @@
 # Embedded Swift Xcode Template for ESP32-C6
 
-A zero-configuration Xcode project template for Embedded Swift development 
-on the ESP32-C6 (RISC-V). Run one script, and everything is set up for you — 
-no manual toolchain installation required.
+A complete Xcode project template for building ESP32-C6 firmware in Swift using the Embedded Swift toolchain and ESP-IDF.
 
----
+## Features
 
-## Requirements
+✅ **Native Swift on Microcontrollers** — Write ESP32-C6 firmware in Swift, not C/C++  
+✅ **Xcode Integration** — Full Xcode build and flash support via `Cmd+B`  
+✅ **FreeRTOS Support** — Access FreeRTOS APIs through bridging headers  
+✅ **Automated Setup** — Single `install.sh` for toolchain and environment  
+✅ **Cross-Platform** — Tested on macOS (Intel & Apple Silicon)  
 
-- macOS 14 or later
-- Xcode 16 or later
-- Internet connection (for initial installation)
+## Quick Start
 
----
-
-## Installation
-
-Clone this repository and run the install script:
-
+### 1. Install Tools
 ```bash
-git clone https://github.com/letstakeabreak/Embedded-Swift-Xcode-Template.git
-cd Embedded-Swift-Xcode-Template
 bash install.sh
 ```
 
-The script will automatically install:
+This installs:
+- ESP-IDF 6.1 → `~/.espswift/esp-idf/`
+- Embedded Swift toolchain via `swiftly`
+- Xcode template to `~/Library/Developer/Xcode/Templates/`
 
-1. **ESP-IDF** — Espressif's official IoT Development Framework, 
-   targeting ESP32-C6
-2. **Embedded Swift toolchain** — via swiftly, the official Swift 
-   toolchain manager
-3. **Xcode Template** — copied to the correct Xcode template directory
+### 2. Create Project in Xcode
+- File → New → Project
+- Select "ESP32-C6" template
+- Choose a name and location
+- Build with `Cmd+B`
 
----
+### 3. Flash to Device
+```bash
+./scripts/flash.sh ~/path/to/project/ProjectName
+```
 
-## Usage
+Or enable automatic flashing in Xcode by adding a Run Script phase.
 
-1. Open Xcode and create a new project (`Cmd+Shift+N`)
-2. Select **Other** → **ESP32-C6 Embedded Swift**
-3. Connect your ESP32-C6 via USB
-4. Build and run — the project will automatically detect your device 
-   and flash the binary
-
----
-
-## Project Structure
+## Architecture
 
 ```
 Embedded-Swift-Xcode-Template/
-├── install.sh                  # One-shot installation script
+├── install.sh                    # Setup script
 ├── scripts/
-│   ├── detect_port.sh          # Automatically detects the ESP32-C6 serial port
-│   └── flash.sh                # Flashes the compiled binary via esptool
+│   ├── detect_port.sh           # Find connected ESP32-C6
+│   └── flash.sh                 # Flash firmware via idf.py
 └── Xcode Template/
     └── ESP32-C6.xctemplate/
-        ├── TemplateInfo.plist  # Xcode template metadata
-        └── main.swift          # Default Blink example (GPIO8)
+        ├── TemplateInfo.plist   # Xcode project configuration
+        ├── build.sh             # ESP-IDF build wrapper for Xcode
+        ├── CMakeLists.txt       # Root CMake configuration
+        ├── main/
+        │   ├── CMakeLists.txt   # Component configuration
+        │   ├── idf_component.yml
+        │   ├── BridgingHeader.h # C ↔ Swift bridge
+        │   └── main.swift       # Entry point
+        └── ...
 ```
 
----
+## Swift Firmware Example
+
+```swift
+@_cdecl("app_main")
+public func app_main() {
+    print("Hello from Embedded Swift on ESP32-C6!")
+    
+    var counter: UInt32 = 0
+    
+    while true {
+        vTaskDelay(pdMS_TO_TICKS(1000))
+        counter += 1
+        print("Tick \(counter)...")
+    }
+}
+```
+
+## System Requirements
+
+- macOS 12+
+- Xcode 15+
+- ESP32-C6 board with USB connection
+- ~3GB disk space for ESP-IDF and toolchains
 
 ## Known Issues
 
-### Xcode Template not appearing in New Project dialog
-
-The template is correctly installed to the Xcode templates directory, 
-but does not yet appear in the New Project dialog. This is a known issue 
-and is being tracked in [#1](https://github.com/letstakeabreak/Embedded-Swift-Xcode-Template/issues/1).
-
-If you know how to fix this, please open a PR or leave a comment on the issue!
-
----
-
-## Roadmap
-
-- [ ] Fix Xcode Template visibility issue
-- [ ] `espswift-idf` Swift Package for ESP-IDF C API bindings (WiFi, BLE, GPIO, etc.)
-- [ ] Support for additional ESP32 variants (C3, S3, H2)
-- [ ] Automatic `swiftly init` non-interactive mode
-
----
-
-## Contributing
-
-Contributions are very welcome! Feel free to open an issue or a pull request.
-
-This project is intended to lower the barrier to entry for Embedded Swift 
-development, and is being developed as part of the Swift Mentorship Program.
-
----
+- Embedded Swift is still experimental; expect limitations in standard library coverage
+- Some FreeRTOS APIs may need custom bridging headers
+- Build times are longer due to full recompilation with each template
 
 ## License
 
-MIT License. See [LICENSE](LICENSE) for details.
+MIT
+
+## References
+
+- [Embedded Swift Documentation](https://www.swift.org/embedded/)
+- [ESP-IDF Documentation](https://docs.espressif.com/projects/esp-idf/en/latest/esp32c6/)
+- [ESP32-C6 Datasheet](https://www.espressif.com/sites/default/files/documentation/esp32-c6_datasheet_en.pdf)

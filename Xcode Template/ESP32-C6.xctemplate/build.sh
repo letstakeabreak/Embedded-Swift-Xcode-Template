@@ -86,6 +86,19 @@ else
         "$FLASH_SCRIPT" "$PROJECT_DIR/$PROJECT_NAME" || \
             echo "Warning: Flash failed or no device connected."
     fi
+
+    # ── Xcode Scheme Setup ───────────────────────────────────────
+    # On first build, generate a properly configured Xcode scheme
+    # so that pressing Cmd+R launches the serial monitor instead of
+    # asking the user to manually configure Edit Scheme → Run.
+    #
+    # setup_scheme.sh is idempotent: it skips if the scheme exists,
+    # so subsequent builds incur no overhead and user customizations
+    # are preserved.
+    SETUP_SCHEME="$HOME/.espswift/scripts/setup_scheme.sh"
+    if [ -x "$SETUP_SCHEME" ]; then
+        "$SETUP_SCHEME" "$PROJECT_DIR" "$PROJECT_NAME" || true
+    fi
 fi
 
 echo "================================================="

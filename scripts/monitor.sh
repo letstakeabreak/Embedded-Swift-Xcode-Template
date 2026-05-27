@@ -2,11 +2,13 @@
 # monitor.sh
 # Opens a serial monitor for the connected ESP32-C6.
 #
-# This script reads serial output from a connected ESP32-C6 board
-# and streams it to stdout. Designed to be called from:
-#   - Terminal directly
-#   - Xcode Scheme as Executable (output goes to Xcode console)
-#   - Build Post-action
+# Reads serial output from the board and streams it to stdout.
+# Designed to be invoked as the Xcode Scheme's Run Executable,
+# routing device output to Xcode's debug console.
+#
+# Note: Input from Xcode's debug console is not supported,
+# as the console is a stdout-only display. Use an external
+# serial terminal for interactive input.
 
 # Use ESP-IDF's Python environment (has pyserial pre-installed).
 IDF_PYTHON=$(find "$HOME/.espressif/python_env" -maxdepth 1 -type d -name "idf*py3.11*" | head -1)/bin/python
@@ -30,11 +32,10 @@ fi
 echo "================================================="
 echo " ESP32-C6 Serial Monitor"
 echo " Port: $PORT @ 115200 baud"
-echo " Press Ctrl+C to exit"
 echo "================================================="
 
 # Stream serial output to stdout using pyserial.
-# We use stdout flushing to ensure real-time output to Xcode console.
+# stdout flushing ensures real-time output to Xcode console.
 "$IDF_PYTHON" -c "
 import serial
 import sys
@@ -50,9 +51,6 @@ try:
             sys.stdout.write(data.decode('utf-8', errors='replace'))
             sys.stdout.flush()
 except KeyboardInterrupt:
-    print('\n=================================================')
-    print(' Disconnected.')
-    print('=================================================')
     ser.close()
 except Exception as e:
     print(f'Error: {e}', file=sys.stderr)

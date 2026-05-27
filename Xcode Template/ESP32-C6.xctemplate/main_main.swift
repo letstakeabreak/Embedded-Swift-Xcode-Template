@@ -71,8 +71,6 @@ public func app_main() {
         
         print("LED: \(name)")
         
-        // Wait approximately 1 second.
-        var i: UInt32 = 0
         // Wait 1 second using FreeRTOS task delay.
         vTaskDelay(pd_ms_to_ticks(1000))
 

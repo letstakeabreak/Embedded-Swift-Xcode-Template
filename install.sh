@@ -136,7 +136,7 @@ echo "Xcode Template installed successfully."
 
 echo "[4/4] Installing helper scripts..."
 
-# Copy detect_port.sh, flash.sh, and monitor.sh into ~/.espswift/scripts/
+# Copy all helper scripts (detect_port.sh, flash.sh, monitor.sh, setup_scheme.sh) into ~/.espswift/scripts/
 # so that the Xcode build script (build.sh) can call them via a known path.
 # These scripts are responsible for finding the connected ESP32-C6,
 # flashing the compiled binary to it, and reading the serial output.

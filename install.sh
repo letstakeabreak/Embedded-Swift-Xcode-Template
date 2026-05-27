@@ -136,13 +136,21 @@ echo "Xcode Template installed successfully."
 
 echo "[4/4] Installing helper scripts..."
 
-# Copy detect_port.sh and flash.sh into ~/.espswift/scripts/ so that
-# the Xcode build script (build.sh) can call them via a known path.
-# These scripts are responsible for finding the connected ESP32-C6
-# and flashing the compiled binary to it.
+# Copy detect_port.sh, flash.sh, and monitor.sh into ~/.espswift/scripts/
+# so that the Xcode build script (build.sh) can call them via a known path.
+# These scripts are responsible for finding the connected ESP32-C6,
+# flashing the compiled binary to it, and reading the serial output.
 mkdir -p "$ESPSWIFT_HOME/scripts"
 cp "$(dirname "$0")/scripts/"*.sh "$ESPSWIFT_HOME/scripts/"
 chmod +x "$ESPSWIFT_HOME/scripts/"*.sh
+
+# Compile the monitor wrapper binary. Xcode's Scheme > Run > Executable
+# only accepts native Mach-O binaries, not shell scripts. This tiny C
+# wrapper does nothing but execve() into monitor.sh, satisfying Xcode's
+# requirement while keeping the actual logic in shell.
+echo "Compiling monitor wrapper binary..."
+clang -o "$ESPSWIFT_HOME/scripts/monitor" "$(dirname "$0")/scripts/monitor_wrapper.c"
+chmod +x "$ESPSWIFT_HOME/scripts/monitor"
 
 echo "Helper scripts installed successfully."
 

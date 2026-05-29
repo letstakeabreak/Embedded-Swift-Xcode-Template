@@ -13,3 +13,6 @@ sdkconfig.old
 *.xcuserstate
 xcuserdata/
 DerivedData/
+# Installer build artifacts
+installer/build/
+installer/*.pkg

@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# postinstall
+# Runs after the package payload has been installed.
+# Invokes install.sh as the actual logged-in user (not root).
+#
+# .pkg scripts run as root, but ESPSwift installs to the user's home
+# directory (~/.espswift, ~/Library/...). We detect the real user and
+# run install.sh with their identity using sudo -u.
+
+set -e
+
+INSTALL_DIR="/tmp/espswift-install"
+
+# Detect the real logged-in user (not root).
+# Installer.app runs postinstall as root, but we need the actual user's
+# $HOME for paths like ~/.espswift/, ~/Library/Developer/Toolchains/, etc.
+REAL_USER=$(stat -f "%Su" /dev/console)
+REAL_HOME=$(eval echo "~$REAL_USER")
+
+echo "Installing ESPSwift for user: $REAL_USER (home: $REAL_HOME)"
+
+# Run install.sh as the real user so all paths resolve correctly.
+sudo -u "$REAL_USER" HOME="$REAL_HOME" bash "$INSTALL_DIR/install.sh"
+
+# Clean up temporary files.
+rm -rf "$INSTALL_DIR"
+
+echo "ESPSwift installation complete."

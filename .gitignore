@@ -16,3 +16,9 @@ DerivedData/
 # Installer build artifacts
 installer/build/
 installer/*.pkg
+
+# Xcode (installer app)
+installer/ESPSwiftInstaller/build/
+installer/ESPSwiftInstaller/**/xcuserdata/
+installer/ESPSwiftInstaller/**/*.xcuserstate
+installer/ESPSwiftInstaller/.DS_Store

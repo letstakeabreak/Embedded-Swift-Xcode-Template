@@ -56,7 +56,7 @@ struct InstallProgressView: View {
                 .frame(height: 120)
                 .padding(.horizontal, 48)
                 .padding(.top, 12)
-                .onChange(of: installer.log) { _ in
+                .onChange(of: installer.log) { _, _ in
                     withAnimation {
                         proxy.scrollTo("logBottom", anchor: .bottom)
                     }

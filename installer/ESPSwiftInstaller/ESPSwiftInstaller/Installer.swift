@@ -21,91 +21,107 @@ class Installer: ObservableObject {
     
     private var process: Process?
     
+    // Buffers partial output until a complete line is received.
+    // This ensures step markers like "[1/4]" are never split across chunks.
+    private var lineBuffer: String = ""
+    
     // Path to install.sh, bundled inside the .app
-        private var installScriptPath: String {
-            Bundle.main.path(forResource: "install", ofType: "sh") ?? ""
-        }
+    private var installScriptPath: String {
+        Bundle.main.path(forResource: "install", ofType: "sh") ?? ""
+    }
+    
+    // Starts the installation process.
+    func startInstallation() {
+        isRunning = true
+        isCompleted = false
+        isFailed = false
+        log = ""
+        steps = InstallStep.allSteps
         
-        // Starts the installation process.
-        func startInstallation() {
-            isRunning = true
-            isCompleted = false
-            isFailed = false
-            log = ""
-            steps = InstallStep.allSteps
-            
-            Task {
-                await runInstallScript()
-            }
+        Task {
+            await runInstallScript()
         }
-        
-        // Cancels the running installation.
-        func cancel() {
-            process?.terminate()
-            isRunning = false
+    }
+    
+    // Cancels the running installation.
+    func cancel() {
+        process?.terminate()
+        isRunning = false
+        isFailed = true
+        appendLog("\nInstallation cancelled.\n")
+    }
+    
+    // Runs install.sh as the current user and reads stdout line by line.
+    private func runInstallScript() async {
+        // Prepare temp directory with all bundled resources.
+        guard let tempDir = prepareTempDirectory() else {
+            appendLog("Error: Could not prepare installation files.\n")
             isFailed = true
-            appendLog("\nInstallation cancelled.\n")
+            isRunning = false
+            return
         }
         
-        // Runs install.sh as the current user and reads stdout line by line.
-        private func runInstallScript() async {
-            // Prepare temp directory with all bundled resources.
-            guard let tempDir = prepareTempDirectory() else {
-                appendLog("Error: Could not prepare installation files.\n")
-                isFailed = true
-                isRunning = false
-                return
-            }
+        let process = Process()
+        self.process = process
+        
+        process.executableURL = URL(fileURLWithPath: "/bin/bash")
+        process.arguments = [tempDir + "/install.sh"]
+        
+        // Pass current user's environment so $HOME resolves correctly.
+        var env = ProcessInfo.processInfo.environment
+        env["HOME"] = NSHomeDirectory()
+        process.environment = env
+        
+        let pipe = Pipe()
+        process.standardOutput = pipe
+        process.standardError = pipe
+        
+        // Read output as it arrives. Data may arrive in arbitrary chunks,
+        // so we buffer it and process only complete lines. This guarantees
+        // step markers like "[1/4]" are matched reliably.
+        pipe.fileHandleForReading.readabilityHandler = { [weak self] handle in
+            let data = handle.availableData
+            guard !data.isEmpty,
+                  let chunk = String(data: data, encoding: .utf8) else { return }
             
-            let process = Process()
-            self.process = process
-            
-            process.executableURL = URL(fileURLWithPath: "/bin/bash")
-            process.arguments = [tempDir + "/install.sh"]
-            
-            // Pass current user's environment so $HOME resolves correctly.
-            var env = ProcessInfo.processInfo.environment
-            env["HOME"] = NSHomeDirectory()
-            process.environment = env
-            
-            let pipe = Pipe()
-            process.standardOutput = pipe
-            process.standardError = pipe
-            
-            // Read output line by line as it arrives.
-            pipe.fileHandleForReading.readabilityHandler = { [weak self] handle in
-                let data = handle.availableData
-                guard !data.isEmpty,
-                      let line = String(data: data, encoding: .utf8) else { return }
+            Task { @MainActor [weak self] in
+                guard let self else { return }
                 
-                Task { @MainActor [weak self] in
-                    self?.appendLog(line)
-                    self?.updateSteps(for: line)
+                // Always show raw output in the log.
+                self.appendLog(chunk)
+                
+                // Accumulate into the line buffer, then process complete lines.
+                self.lineBuffer += chunk
+                while let newlineIndex = self.lineBuffer.firstIndex(of: "\n") {
+                    let line = String(self.lineBuffer[..<newlineIndex])
+                    self.lineBuffer.removeSubrange(...newlineIndex)
+                    self.updateSteps(for: line)
                 }
-            }
-            
-            do {
-                try process.run()
-                process.waitUntilExit()
-                
-                pipe.fileHandleForReading.readabilityHandler = nil
-                
-                if process.terminationStatus == 0 {
-                    markAllCompleted()
-                    isCompleted = true
-                } else {
-                    isFailed = true
-                }
-                isRunning = false
-                
-            } catch {
-                appendLog("Error: \(error.localizedDescription)\n")
-                isFailed = true
-                isRunning = false
             }
         }
-
-        // Copies bundled resources to a temp directory so install.sh
+        
+        do {
+            try process.run()
+            process.waitUntilExit()
+            
+            pipe.fileHandleForReading.readabilityHandler = nil
+            
+            if process.terminationStatus == 0 {
+                markAllCompleted()
+                isCompleted = true
+            } else {
+                isFailed = true
+            }
+            isRunning = false
+            
+        } catch {
+            appendLog("Error: \(error.localizedDescription)\n")
+            isFailed = true
+            isRunning = false
+        }
+    }
+    
+    // Copies bundled resources to a temp directory so install.sh
     // can find scripts/ and Xcode Template/ as siblings.
     private func prepareTempDirectory() -> String? {
         let tempDir = NSTemporaryDirectory() + "espswift-install"
@@ -180,30 +196,30 @@ class Installer: ObservableObject {
     }
     
     // Checks if a line of output matches a step marker and updates state.
-        private func updateSteps(for line: String) {
-            for i in steps.indices {
-                if line.contains(steps[i].marker) {
-                    // Mark previous steps as completed.
-                    for j in 0..<i {
-                        if steps[j].state == .inProgress {
-                            steps[j].state = .completed
-                        }
+    private func updateSteps(for line: String) {
+        for i in steps.indices {
+            if line.contains(steps[i].marker) {
+                // Mark previous steps as completed.
+                for j in 0..<i {
+                    if steps[j].state == .inProgress {
+                        steps[j].state = .completed
                     }
-                    steps[i].state = .inProgress
-                    return
                 }
-            }
-            
-            // "Installation complete." marks everything done.
-            if line.contains("Installation complete.") {
-                markAllCompleted()
+                steps[i].state = .inProgress
+                return
             }
         }
         
-        private func markAllCompleted() {
-            for i in steps.indices {
-                steps[i].state = .completed
-            }
+        // "Installation complete." marks everything done.
+        if line.contains("Installation complete.") {
+            markAllCompleted()
         }
+    }
+    
+    private func markAllCompleted() {
+        for i in steps.indices {
+            steps[i].state = .completed
+        }
+    }
 }
 

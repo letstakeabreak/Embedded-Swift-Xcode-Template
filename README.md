@@ -1,60 +1,73 @@
 # Embedded Swift Xcode Template for ESP32-C6
 
-A complete Xcode project template for building ESP32-C6 firmware in Swift using the Embedded Swift toolchain and ESP-IDF.
+Write ESP32-C6 firmware in Swift — build and flash directly from Xcode, just like Arduino IDE.
+
+![Platform](https://img.shields.io/badge/platform-macOS-lightgrey)
+![Swift](https://img.shields.io/badge/swift-Embedded-orange)
+![License](https://img.shields.io/badge/license-MIT-blue)
 
 ## Features
 
 ✅ **Native Swift on Microcontrollers** — Write ESP32-C6 firmware in Swift, not C/C++  
-✅ **Xcode Integration** — Full Xcode build and flash support via `Cmd+B`  
-✅ **FreeRTOS Support** — Access FreeRTOS APIs through bridging headers  
-✅ **Automated Setup** — Single `install.sh` for toolchain and environment  
-✅ **Cross-Platform** — Tested on macOS (Intel & Apple Silicon)  
+✅ **Xcode Integration** — `Cmd+B` builds and flashes automatically  
+✅ **Serial Monitor** — `Cmd+R` streams board output to Xcode console  
+✅ **One-Click Install** — Single `install.sh` sets up everything  
+✅ **NeoPixel Ready** — WS2812 RGB LED example included  
+
+---
 
 ## Quick Start
 
-### 1. Install Tools
+### Option 1: Installer App (Recommended)
+Download and run `ESPSwiftInstaller.app` from [Releases](https://github.com/letstakeabreak/Embedded-Swift-Xcode-Template/releases).
+
+### Option 2: Terminal
 ```bash
+git clone https://github.com/letstakeabreak/Embedded-Swift-Xcode-Template.git
+cd Embedded-Swift-Xcode-Template
 bash install.sh
 ```
 
-This installs:
-- ESP-IDF 6.1 → `~/.espswift/esp-idf/`
-- Embedded Swift toolchain via `swiftly`
-- Xcode template to `~/Library/Developer/Xcode/Templates/`
+Installation takes 5–10 minutes (~3GB download).
 
-### 2. Create Project in Xcode
-- File → New → Project
-- Select "ESP32-C6" template
-- Choose a name and location
-- Build with `Cmd+B`
+### Create a Project
+1. Restart Xcode
+2. File → New → Project → Other → **ESP32-C6**
+3. Connect your ESP32-C6 board via USB
+4. Press `Cmd+B` — builds and flashes automatically
+5. Press `Cmd+R` — opens serial monitor in Xcode console
 
-### 3. Flash to Device
+---
+
+## Serial Monitor
+
+After the first build, pressing `Cmd+R` streams live serial output from the board directly into Xcode's debug console — no external tools needed.
+
+=================================================
+ESP32-C6 Serial Monitor
+Port: /dev/cu.usbmodem... @ 115200 baud
+Hello from Embedded Swift on ESP32-C6!
+LED: Red
+LED: Green
+LED: Blue
+
+> **Note:** Xcode's console is output-only. For interactive serial input, use an external tool like `screen /dev/cu.usbmodem... 115200`.
+
+---
+
+## Adding Libraries
+
+To add an ESP-IDF component library:
+
 ```bash
-./scripts/flash.sh ~/path/to/project/ProjectName
+bash scripts/add_library.sh espressif/led_strip led_strip.h
 ```
 
-Or enable automatic flashing in Xcode by adding a Run Script phase.
+This automatically updates `main/idf_component.yml` and `main/BridgingHeader.h`.
 
-## Architecture
+Available libraries: [ESP-IDF Component Registry](https://components.espressif.com)
 
-```
-Embedded-Swift-Xcode-Template/
-├── install.sh                    # Setup script
-├── scripts/
-│   ├── detect_port.sh           # Find connected ESP32-C6
-│   └── flash.sh                 # Flash firmware via idf.py
-└── Xcode Template/
-    └── ESP32-C6.xctemplate/
-        ├── TemplateInfo.plist   # Xcode project configuration
-        ├── build.sh             # ESP-IDF build wrapper for Xcode
-        ├── CMakeLists.txt       # Root CMake configuration
-        ├── main/
-        │   ├── CMakeLists.txt   # Component configuration
-        │   ├── idf_component.yml
-        │   ├── BridgingHeader.h # C ↔ Swift bridge
-        │   └── main.swift       # Entry point
-        └── ...
-```
+---
 
 ## Swift Firmware Example
 
@@ -62,36 +75,98 @@ Embedded-Swift-Xcode-Template/
 @_cdecl("app_main")
 public func app_main() {
     print("Hello from Embedded Swift on ESP32-C6!")
-    
-    var counter: UInt32 = 0
-    
+
     while true {
-        vTaskDelay(pdMS_TO_TICKS(1000))
-        counter += 1
-        print("Tick \(counter)...")
+        vTaskDelay(pd_ms_to_ticks(1000))
+        print("Tick...")
     }
 }
 ```
+
+---
+
+## FAQ
+
+### Why is the Xcode destination set to "My Mac"?
+
+This is expected. Xcode runs a macOS helper tool on your Mac, which builds and flashes firmware to the connected ESP32-C6 board over USB. The destination refers to where the helper runs, not where the firmware is deployed.
+
+- **Xcode Destination**: My Mac (the helper runs here)
+- **Actual Flash Target**: ESP32-C6 (connected via USB)
+
+### Why does the first build take so long?
+
+The first build downloads ESP-IDF component dependencies (~minutes). Subsequent builds are incremental and much faster (~35 seconds).
+
+### My board isn't detected
+
+Run `ls /dev/cu.*` with the board connected. Supported USB interfaces:
+- Native USB-CDC → `/dev/cu.usbmodem*`
+- WCH CH340 → `/dev/cu.wchusbserial*`
+- CP210x → `/dev/cu.SLAB_USBtoUART*`
+
+CH340-based boards may need a driver: [WCH CH340 Driver](https://www.wch-ic.com/downloads/CH341SER_MAC_ZIP.html)
+
+### `Cmd+R` doesn't show serial output
+
+After the first `Cmd+B`, close and reopen the project in Xcode. The serial monitor scheme is generated on first build and requires a project reload to take effect. ([#3](https://github.com/letstakeabreak/Embedded-Swift-Xcode-Template/issues/3))
+
+---
+
+## Architecture
+
+Embedded-Swift-Xcode-Template/
+├── install.sh                        # One-command environment setup
+├── scripts/
+│   ├── detect_port.sh               # Auto-detects connected ESP32-C6
+│   ├── flash.sh                     # Flashes firmware via idf.py
+│   ├── monitor.sh                   # Streams serial output to stdout
+│   ├── setup_scheme.sh              # Auto-configures Xcode Run scheme
+│   └── add_library.sh               # Adds ESP-IDF component libraries
+├── installer/
+│   ├── build_pkg.sh                 # Builds .pkg installer
+│   └── ESPSwiftInstaller/           # SwiftUI installer app
+└── Xcode Template/
+└── ESP32-C6.xctemplate/
+├── TemplateInfo.plist       # Xcode template configuration
+├── build.sh                 # ESP-IDF build + flash wrapper
+├── CMakeLists.txt           # Root CMake configuration
+├── sdkconfig.defaults       # ESP-IDF defaults (watchdog off)
+└── main/
+├── CMakeLists.txt       # Component configuration
+├── idf_component.yml    # ESP-IDF dependencies
+├── BridgingHeader.h     # C ↔ Swift bridge
+└── main.swift           # Firmware entry point
+
+---
 
 ## System Requirements
 
 - macOS 12+
 - Xcode 15+
 - ESP32-C6 board with USB connection
-- ~3GB disk space for ESP-IDF and toolchains
+- ~3GB disk space
 
-## Known Issues
+---
 
-- Embedded Swift is still experimental; expect limitations in standard library coverage
-- Some FreeRTOS APIs may need custom bridging headers
-- Build times are longer due to full recompilation with each template
+## Known Issues & Limitations
+
+- Embedded Swift is experimental; not all Swift standard library features are available
+- Xcode's serial console is read-only (no interactive input)
+- Scheme auto-generation requires closing and reopening the project after first build ([#3](https://github.com/letstakeabreak/Embedded-Swift-Xcode-Template/issues/3))
+- Build times are longer than native C/C++ due to full Swift recompilation
+
+See all open issues: [GitHub Issues](https://github.com/letstakeabreak/Embedded-Swift-Xcode-Template/issues)
+
+---
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE)
 
 ## References
 
 - [Embedded Swift Documentation](https://www.swift.org/embedded/)
 - [ESP-IDF Documentation](https://docs.espressif.com/projects/esp-idf/en/latest/esp32c6/)
+- [ESP-IDF Component Registry](https://components.espressif.com)
 - [ESP32-C6 Datasheet](https://www.espressif.com/sites/default/files/documentation/esp32-c6_datasheet_en.pdf)

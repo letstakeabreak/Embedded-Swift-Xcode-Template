@@ -22,3 +22,4 @@ installer/ESPSwiftInstaller/build/
 installer/ESPSwiftInstaller/**/xcuserdata/
 installer/ESPSwiftInstaller/**/*.xcuserstate
 installer/ESPSwiftInstaller/.DS_Store
+installer/*.dmg

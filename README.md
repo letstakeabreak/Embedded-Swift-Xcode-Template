@@ -19,6 +19,12 @@ Write ESP32-C6 firmware in Swift — build and flash directly from Xcode, just l
 
 ---
 
+## Demo
+
+> 🎬 Demo video coming soon — NeoPixel RGB cycle running on ESP32-C6, built and flashed directly from Xcode.
+
+---
+
 ## Quick Start
 
 ### Option 1: Installer App (Recommended)

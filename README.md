@@ -5,6 +5,9 @@ Write ESP32-C6 firmware in Swift — build and flash directly from Xcode, just l
 ![Platform](https://img.shields.io/badge/platform-macOS-lightgrey)
 ![Swift](https://img.shields.io/badge/swift-Embedded-orange)
 ![License](https://img.shields.io/badge/license-MIT-blue)
+![Status](https://img.shields.io/badge/status-Experimental%20Preview-yellow)
+
+> ⚠️ **Experimental Preview** — This project is in active development. APIs, scripts, and installation paths may change without notice. Tested on macOS 14 with Apple Silicon.
 
 ## Features
 
@@ -146,6 +149,63 @@ Embedded-Swift-Xcode-Template/
 - Xcode 15+
 - ESP32-C6 board with USB connection
 - ~3GB disk space
+
+---
+
+## What Gets Installed
+
+Running `install.sh` or `ESPSwiftInstaller.app` installs the following into your home directory:
+
+| Path | Contents |
+|------|----------|
+| `~/.espswift/esp-idf/` | ESP-IDF 6.1 (~2.5 GB) |
+| `~/.espswift/scripts/` | Helper scripts (flash, monitor, etc.) |
+| `~/.espressif/` | ESP-IDF Python tools and toolchains (~500 MB) |
+| `~/.swiftly/` | swiftly toolchain manager |
+| `~/Library/Developer/Toolchains/` | Embedded Swift snapshot toolchain |
+| `~/Library/Developer/Xcode/Templates/` | ESP32-C6 Xcode template |
+
+Nothing is installed to system directories. Everything is scoped to your user home directory.
+
+---
+
+## Uninstall
+
+To completely remove ESPSwift:
+
+```bash
+# Remove ESP-IDF and helper scripts
+rm -rf ~/.espswift
+
+# Remove ESP-IDF Python tools
+rm -rf ~/.espressif
+
+# Remove Xcode template
+rm -rf ~/Library/Developer/Xcode/Templates/Project\ Templates/Other/ESP32-C6.xctemplate
+
+# Remove serial monitor binary
+rm -f ~/Library/Developer/Toolchains/*.xctoolchain  # optional: removes Swift toolchain
+```
+
+> **Note:** Removing `~/.swiftly/` and `~/Library/Developer/Toolchains/` will also remove any other Swift toolchains managed by swiftly.
+
+---
+
+## Roadmap
+
+This project is being developed as part of the [Swift Mentorship Program](https://www.swift.org/mentorship/).
+
+**Near-term**
+- [ ] Signed and notarized installer
+- [ ] GPIO and I2C sensor examples
+- [ ] Xcode scheme auto-reload without project reopen ([#3](https://github.com/letstakeabreak/Embedded-Swift-Xcode-Template/issues/3))
+- [ ] Installer progress bar improvements ([#4](https://github.com/letstakeabreak/Embedded-Swift-Xcode-Template/issues/4))
+
+**Longer-term**
+- [ ] `espswift` CLI (doctor / build / flash / monitor)
+- [ ] `espswift-idf` Swift Package (idiomatic Swift wrappers for ESP-IDF APIs)
+- [ ] ESP32-C3 and ESP32-S3 support
+- [ ] Homebrew tap
 
 ---
 

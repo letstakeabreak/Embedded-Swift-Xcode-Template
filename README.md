@@ -7,7 +7,7 @@ Write ESP32-C6 firmware in Swift — build and flash directly from Xcode, just l
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Status](https://img.shields.io/badge/status-Experimental%20Preview-yellow)
 
-> ⚠️ **Experimental Preview** — This project is in active development. APIs, scripts, and installation paths may change without notice. Tested on macOS 14 with Apple Silicon.
+> ⚠️ **Experimental Preview** — This project is in active development. APIs, scripts, and installation paths may change without notice. Tested on macOS 26 with Apple Silicon.
 
 ## Features
 
